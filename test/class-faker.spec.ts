@@ -1,0 +1,25 @@
+import {Fake, generateFakeData} from '../src/class-faker';
+
+describe('faker', () => {
+  it('Should create object with id', async () => {
+    class ToGenerate {
+      @Fake(() => 'id')
+      id: string;
+    }
+    const generated = generateFakeData(ToGenerate);
+    expect(generated.id).toEqual('id');
+  });
+
+  it('Should be possible to pass exclude option to generateFakeData to exclude some keys', async () => {
+    class ToGenerate {
+      @Fake(() => 'id')
+      id: string;
+
+      @Fake(() => 'property')
+      property: string;
+    }
+    const generated = generateFakeData(ToGenerate, {exclude: ['id']});
+    expect(generated.id).not.toBeDefined();
+    expect(generated.property).toEqual('property')
+  });
+})
