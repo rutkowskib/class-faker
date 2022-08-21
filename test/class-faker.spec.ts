@@ -1,4 +1,4 @@
-import {Fake, generateFakeData} from '../src/class-faker';
+import {Fake, generateFakeData} from '../src';
 
 describe('faker', () => {
   it('Should create object with id', async () => {

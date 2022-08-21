@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "module": "commonjs",
+    "outDir": "dist",
     "declaration": true,
     "removeComments": true,
     "emitDecoratorMetadata": true,
@@ -9,6 +10,8 @@
     "target": "es2017"
   },
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "test",
+    "dist"
   ]
 }
