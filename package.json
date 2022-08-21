@@ -17,5 +17,6 @@
   },
   "dependencies": {
     "reflect-metadata": "^0.1.13"
-  }
+  },
+  "repository": "git@github.com:rutkowskib/class-faker.git"
 }
