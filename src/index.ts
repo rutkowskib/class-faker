@@ -5,11 +5,20 @@ const dataFakerKey = Symbol('dataFakerKey');
 
 type Class<T> = new (...args: any[]) => T;
 
-export const Fake = (fun): (target: object, propertyKey: string) => void => {
-  return registerProperty(fun);
+type FakeOptions = {
+  optional?: boolean;
 }
 
-const registerProperty = (fun) => (target: object, propertyKey: string): void => {
+export const Fake = (fun, options?: FakeOptions): (target: object, propertyKey: string) => void => {
+  return registerProperty(fun, options);
+}
+
+const registerProperty = (fun, options?: FakeOptions) => (target: object, propertyKey: string): void => {
+  if (options?.optional) {
+    if(Math.random() > 0.5) {
+      return;
+    }
+  }
   let properties: string[] = Reflect.getMetadata(propertiesKey, target);
   if (properties) {
     properties.push(propertyKey);

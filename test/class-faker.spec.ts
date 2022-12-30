@@ -22,4 +22,26 @@ describe('faker', () => {
     expect(generated.id).not.toBeDefined();
     expect(generated.property).toEqual('property')
   });
-})
+
+  it('Should be possible to mark some properties as optional', async () => {
+    let hasBeenGenerated = false;
+    let hasNotBeenGenerated = false;
+    for (let i = 0; i < 1000; i++) {
+      class ToGenerate {
+        @Fake(() => 'id')
+        id: string;
+
+        @Fake(() => 'property', {optional: true})
+        property?: string;
+      }
+      const generated = generateFakeData(ToGenerate);
+      if (generated.property) {
+        hasBeenGenerated = true;
+      } else {
+        hasNotBeenGenerated = true;
+      }
+    }
+    expect(hasBeenGenerated).toBeTruthy();
+    expect(hasNotBeenGenerated).toBeTruthy();
+  });
+});
