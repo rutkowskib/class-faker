@@ -44,4 +44,12 @@ describe('faker', () => {
     expect(hasBeenGenerated).toBeTruthy();
     expect(hasNotBeenGenerated).toBeTruthy();
   });
+
+  it('Should not fail with only optional ', async () => {
+    class ToGenerate {
+      @Fake(() => 'property', {optional: true})
+      property?: object
+    }
+    expect(() => generateFakeData(ToGenerate)).not.toThrow();
+  });
 });

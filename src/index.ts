@@ -35,7 +35,7 @@ function getFakeFunction(target: any, propertyKey: string) {
 }
 
 function getFakedProperties<T>(origin: T): T {
-  const properties: string[] = Reflect.getMetadata(propertiesKey, origin);
+  const properties: string[] = Reflect.getMetadata(propertiesKey, origin) ?? [];
   const result = {};
   properties.forEach(key => result[key] = origin[key]);
   return result as T;
