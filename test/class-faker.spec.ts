@@ -52,4 +52,28 @@ describe('faker', () => {
     }
     expect(() => generateFakeData(ToGenerate)).not.toThrow();
   });
+
+  it('Should be possible to make one property depend on another', async () => {
+    class ToGenerateTrue {
+      @Fake(() => true)
+      depend: string;
+
+      @Fake(() => 'property', {dependsOn: 'depend'})
+      property: string;
+    }
+    const generated = generateFakeData(ToGenerateTrue);
+    expect(generated.depend).toEqual(true);
+    expect(generated.property).toEqual('property');
+
+    class NotToGenerate {
+      @Fake(() => false)
+      depend: string;
+
+      @Fake(() => 'property', {dependsOn: 'depend'})
+      property: string;
+    }
+    const notGenerated = generateFakeData(NotToGenerate);
+    expect(notGenerated.depend).toEqual(false);
+    expect(notGenerated.property).not.toBeDefined();
+  });
 });

@@ -2,11 +2,13 @@ import 'reflect-metadata';
 
 const propertiesKey = Symbol('propertiesKey');
 const dataFakerKey = Symbol('dataFakerKey');
+const optionsKey = Symbol('optionsKey');
 
 type Class<T> = new (...args: any[]) => T;
 
 type FakeOptions = {
   optional?: boolean;
+  dependsOn? :string;
 }
 
 export const Fake = (fun, options?: FakeOptions): (target: object, propertyKey: string) => void => {
@@ -14,11 +16,6 @@ export const Fake = (fun, options?: FakeOptions): (target: object, propertyKey: 
 }
 
 const registerProperty = (fun, options?: FakeOptions) => (target: object, propertyKey: string): void => {
-  if (options?.optional) {
-    if(Math.random() > 0.5) {
-      return;
-    }
-  }
   let properties: string[] = Reflect.getMetadata(propertiesKey, target);
   if (properties) {
     properties.push(propertyKey);
@@ -27,6 +24,7 @@ const registerProperty = (fun, options?: FakeOptions) => (target: object, proper
     Reflect.defineMetadata(propertiesKey, properties, target);
   }
   Reflect.defineMetadata(dataFakerKey, fun, target, propertyKey);
+  Reflect.defineMetadata(optionsKey, options ?? {}, target, propertyKey);
 }
 
 
@@ -54,5 +52,18 @@ export const generateFakeData = <T>(ClassToFake: Class<T>, options: generateOpti
       const mockFunction = getFakeFunction(obj, key);
       mock[key] = mockFunction();
     });
+  Object.keys(keys).forEach((key) => {
+    const options = Reflect.getMetadata(optionsKey, obj, key);
+    if (options.optional) {
+      if (Math.random() > 0.5) {
+        mock[key] = undefined;
+      }
+    }
+    if (options.dependsOn) {
+      if (!mock[options.dependsOn]) {
+        mock[key] = undefined;
+      }
+    }
+  });
   return mock as T;
 };
